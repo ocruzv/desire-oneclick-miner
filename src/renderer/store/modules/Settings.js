@@ -1,0 +1,33 @@
+const state = {
+  currentPool: 'stratum+tcp://pool.unimining.net:4234',
+  mineWith: [],
+  wallet: 'DJMLtWSp7M1Dy2g18SyBLJD4kw3RfiNVz9',
+  advancedMode: false,
+};
+
+const mutations = {
+  CHANGE_CURRENT_POOL(state, payload) {
+    state.currentPool = payload.pool;
+  },
+  CHANGE_MINE_WITH(state, payload) {
+    state.mineWith = payload.mineWith;
+  },
+  CHANGE_WALLET_ADDRESS(state, payload) {
+    state.wallet = payload.wallet;
+  },
+  CHANGE_ADVANCED_MODE(state, payload) {
+    state.advancedMode = payload.advancedMode;
+  },
+};
+
+// const actions = {
+//   someAsyncTask({ commit }) {
+//     // do something async
+//     commit('INCREMENT_MAIN_COUNTER');
+//   },
+// };
+
+export default {
+  state,
+  mutations,
+};
