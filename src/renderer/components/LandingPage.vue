@@ -99,7 +99,8 @@ export default {
       const miner = execFile(path.join(__static, minerPath),
         ['--algo=neoscrypt',
           `--url=${this.currentPool}`,
-          `--user=${this.settings.wallet}`]);
+          `--user=${this.settings.wallet}`,
+          '-p c=DSR']);
 
       this.$store.commit('ADD_PID', {
         pid: miner.pid,
@@ -152,7 +153,8 @@ export default {
       const miner = execFile(path.join(__static, minerPath),
         ['--algo=neoscrypt',
           `--url=${this.currentPool}`,
-          `--user=${this.settings.wallet}`]);
+          `--user=${this.settings.wallet}`,
+          '-p c=DSR']);
 
       this.$store.commit('ADD_PID', {
         pid: miner.pid,
