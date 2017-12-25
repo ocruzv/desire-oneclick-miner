@@ -1,7 +1,7 @@
 const state = {
   currentPool: 'stratum+tcp://pool.unimining.net:4234',
   customPool: '',
-  mineWith: [],
+  mineWith: ['gpu'],
   wallet: 'DJMLtWSp7M1Dy2g18SyBLJD4kw3RfiNVz9',
   advancedMode: false,
 };

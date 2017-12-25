@@ -26,7 +26,7 @@
         <label class="label">How do you want to mine?</label>
         <div class="block">
           <b-checkbox v-model="mineWith"
-              native-value="gpu">
+              native-value="gpu" :disabled="platform !== 'win32' || platform !== 'win'">
               GPU (Only Windows)
           </b-checkbox>
           <b-checkbox v-model="mineWith"
@@ -69,6 +69,7 @@ export default {
       poolSelected: null,
       mineWith: ['gpu'],
       advancedMode: false,
+      platform: require('os').platform(),
     };
   },
   methods: {
