@@ -9,6 +9,7 @@
     name: 'desire-oneclick-miner',
     created() {
       this.$store.commit('RESTART_SYSTEM');
+      this.$store.commit('RESET_MINER_STATUS');
     },
   };
 </script>
