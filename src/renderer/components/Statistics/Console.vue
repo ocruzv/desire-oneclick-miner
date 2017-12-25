@@ -11,12 +11,13 @@ export default {
   computed: {
     ...mapState({
       miner: state => state.Miner,
+      settings: state => state.Settings,
     }),
   },
   methods: {
     updateScroll() {
       const element = this.$refs.console;
-      element.scrollTop = element.scrollHeight;
+      if (element) element.scrollTop = element.scrollHeight;
     },
   },
   created() {

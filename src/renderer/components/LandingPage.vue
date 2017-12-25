@@ -32,7 +32,7 @@
 
 <script>
 import { execFile } from 'child_process';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import path from 'path';
 import Numbers from './Statistics/Numbers';
 import Console from './Statistics/Console';
@@ -52,6 +52,9 @@ export default {
     ...mapState({
       settings: state => state.Settings,
       system: state => state.System,
+    }),
+    ...mapGetters({
+      currentPool: 'getCurrentPool',
     }),
     wallet: {
       get() {
@@ -95,7 +98,7 @@ export default {
 
       const miner = execFile(path.join(__static, minerPath),
         ['--algo=neoscrypt',
-          `--url=${this.settings.currentPool}`,
+          `--url=${this.currentPool}`,
           `--user=${this.settings.wallet}`]);
 
       this.$store.commit('ADD_PID', {
@@ -148,7 +151,7 @@ export default {
       }
       const miner = execFile(path.join(__static, minerPath),
         ['--algo=neoscrypt',
-          `--url=${this.settings.currentPool}`,
+          `--url=${this.currentPool}`,
           `--user=${this.settings.wallet}`]);
 
       this.$store.commit('ADD_PID', {

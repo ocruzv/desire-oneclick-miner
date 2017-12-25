@@ -13,7 +13,13 @@
               :key="pool.url">
               {{ pool.name }}
             </option>
+            <option value="custom">Custom pool...</option>
           </b-select>
+        </b-field>
+      </div>
+      <div class="field-container" v-if="poolSelected === 'custom'">
+        <b-field label="Please enter the full Stratum URL Server with port">
+          <b-input v-model="customPool" placeholder="stratum+tcp://pool.unimining.net:4234"></b-input>
         </b-field>
       </div>
       <div class="field-container">
@@ -59,6 +65,7 @@ export default {
   data() {
     return {
       pools: [],
+      customPool: '',
       poolSelected: null,
       mineWith: ['gpu'],
       advancedMode: false,
@@ -68,6 +75,7 @@ export default {
     save() {
       this.$store.commit('CHANGE_CURRENT_POOL', {
         pool: this.poolSelected,
+        customPool: this.customPool,
       });
       this.$store.commit('CHANGE_MINE_WITH', {
         mineWith: this.mineWith,
@@ -97,6 +105,7 @@ export default {
   created() {
     this.getPools();
     this.poolSelected = this.$store.state.Settings.currentPool;
+    this.customPool = this.$store.state.Settings.customPool;
     this.mineWith = this.$store.state.Settings.mineWith;
     this.advancedMode = this.$store.state.Settings.advancedMode;
   },
