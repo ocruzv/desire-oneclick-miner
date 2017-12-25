@@ -1,5 +1,5 @@
 <template>
-  <div id="console-view">
+  <div id="console-view" ref="console">
     <p v-for="(log, index) in miner.console" :key="index">{{log}}</p>
   </div>
 </template>
@@ -12,6 +12,15 @@ export default {
     ...mapState({
       miner: state => state.Miner,
     }),
+  },
+  methods: {
+    updateScroll() {
+      const element = this.$refs.console;
+      element.scrollTop = element.scrollHeight;
+    },
+  },
+  created() {
+    setInterval(this.updateScroll, 500);
   },
 };
 </script>
