@@ -1,10 +1,10 @@
 # desire-oneclick-miner
 
-> Desire miner with just one click
+> Desire miner with just one click - Nvidia & Windows Only.
 
 #### Known bugs
 
-- Currently just works with CUDA 9.1 drivers. In future releases will support CUDA 8 too.
+- Currently only works with CUDA 9.1 drivers. In future releases will support CUDA 8 too.
 
 #### To do
 
