@@ -1,6 +1,7 @@
 const state = {
   currentPool: 'stratum+tcp://pool.unimining.net:4234',
-  mineWith: [],
+  customPool: '',
+  mineWith: ['gpu'],
   wallet: 'DJMLtWSp7M1Dy2g18SyBLJD4kw3RfiNVz9',
   advancedMode: false,
 };
@@ -8,6 +9,7 @@ const state = {
 const mutations = {
   CHANGE_CURRENT_POOL(state, payload) {
     state.currentPool = payload.pool;
+    state.customPool = payload.customPool;
   },
   CHANGE_MINE_WITH(state, payload) {
     state.mineWith = payload.mineWith;
@@ -20,6 +22,18 @@ const mutations = {
   },
 };
 
+const getters = {
+  getCurrentPool: (state) => {
+    let currentPool;
+    if (state.currentPool === 'custom') {
+      currentPool = state.customPool;
+    } else {
+      currentPool = state.currentPool;
+    }
+    return currentPool;
+  },
+};
+
 // const actions = {
 //   someAsyncTask({ commit }) {
 //     // do something async
@@ -29,5 +43,6 @@ const mutations = {
 
 export default {
   state,
+  getters,
   mutations,
 };

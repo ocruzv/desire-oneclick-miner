@@ -32,7 +32,7 @@
 
 <script>
 import { execFile } from 'child_process';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import path from 'path';
 import Numbers from './Statistics/Numbers';
 import Console from './Statistics/Console';
@@ -52,6 +52,9 @@ export default {
     ...mapState({
       settings: state => state.Settings,
       system: state => state.System,
+    }),
+    ...mapGetters({
+      currentPool: 'getCurrentPool',
     }),
     wallet: {
       get() {
@@ -95,21 +98,31 @@ export default {
 
       const miner = execFile(path.join(__static, minerPath),
         ['--algo=neoscrypt',
-          `--url=${this.settings.currentPool}`,
-          `--user=${this.settings.wallet}`]);
+          `--url=${this.currentPool}`,
+          `--user=${this.settings.wallet}`,
+          '-p c=DSR']);
 
       this.$store.commit('ADD_PID', {
         pid: miner.pid,
       });
 
-      // miner.stdout.on('data', (data) => {
-      //   this.$toast.open({
-      //     duration: 3000,
-      //     message: data,
-      //     position: 'is-bottom',
-      //     type: 'is-info',
-      //   });
-      // });
+      miner.stdout.on('data', (data) => {
+        this.$store.commit('APPEND_CONSOLE', {
+          log: data,
+        });
+
+        if (data.split(' ')[2] === 'thread') {
+          this.$store.commit('UPDATE_CPU_SPEED', {
+            isShare: false,
+            speed: data.replace(/.*thread \d+: \d+ hashes, (\d+(\.\d+)?) KH\/s/, '$1'),
+          });
+        } else if (data.split(' ')[2] === 'accepted:') {
+          this.$store.commit('UPDATE_CPU_SPEED', {
+            isShare: true,
+            speed: data.replace(/.*accepted: \d+\/\d+ \(.+\), (\d+(\.\d+)?) .*/, '$1'),
+          });
+        }
+      });
 
       miner.stderr.on('data', (data) => {
         this.$store.commit('APPEND_CONSOLE', {
@@ -148,8 +161,9 @@ export default {
       }
       const miner = execFile(path.join(__static, minerPath),
         ['--algo=neoscrypt',
-          `--url=${this.settings.currentPool}`,
-          `--user=${this.settings.wallet}`]);
+          `--url=${this.currentPool}`,
+          `--user=${this.settings.wallet}`,
+          '-p c=DSR']);
 
       this.$store.commit('ADD_PID', {
         pid: miner.pid,
@@ -186,7 +200,7 @@ export default {
         //   pid += pid;
         // }
         try {
-          process.kill(pid, 'SIGHUP');
+          process.kill(pid, 'SIGINT');
           this.$store.commit('REMOVE_PID', {
             pid,
           });
