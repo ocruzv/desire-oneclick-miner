@@ -115,6 +115,24 @@ export default {
       //   });
       // });
 
+      miner.stdout.on('data', (data) => {
+        this.$store.commit('APPEND_CONSOLE', {
+          log: data,
+        });
+
+        if (data.split(' ')[2] === 'thread') {
+          this.$store.commit('UPDATE_CPU_SPEED', {
+            isShare: false,
+            speed: data.replace(/.*thread \d+: \d+ hashes, (\d+(\.\d+)?) KH\/s/, '$1'),
+          });
+        } else if (data.split(' ')[2] === 'accepted:') {
+          this.$store.commit('UPDATE_CPU_SPEED', {
+            isShare: true,
+            speed: data.replace(/.*accepted: \d+\/\d+ \(.+\), (\d+(\.\d+)?) .*/, '$1'),
+          });
+        }
+      });
+
       miner.stderr.on('data', (data) => {
         this.$store.commit('APPEND_CONSOLE', {
           log: data,
@@ -191,7 +209,7 @@ export default {
         //   pid += pid;
         // }
         try {
-          process.kill(pid, 'SIGHUP');
+          process.kill(pid, 'SIGINT');
           this.$store.commit('REMOVE_PID', {
             pid,
           });

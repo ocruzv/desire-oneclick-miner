@@ -26,7 +26,7 @@
         <label class="label">How do you want to mine?</label>
         <div class="block">
           <b-checkbox v-model="mineWith"
-              native-value="gpu" :disabled="platform !== 'win32' || platform !== 'win'">
+              native-value="gpu" :disabled="platform !== 'win32'">
               GPU (Only Windows)
           </b-checkbox>
           <b-checkbox v-model="mineWith"
