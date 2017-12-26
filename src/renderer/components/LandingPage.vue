@@ -106,15 +106,6 @@ export default {
         pid: miner.pid,
       });
 
-      // miner.stdout.on('data', (data) => {
-      //   this.$toast.open({
-      //     duration: 3000,
-      //     message: data,
-      //     position: 'is-bottom',
-      //     type: 'is-info',
-      //   });
-      // });
-
       miner.stdout.on('data', (data) => {
         this.$store.commit('APPEND_CONSOLE', {
           log: data,
