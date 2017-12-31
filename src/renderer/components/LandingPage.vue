@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { execFile } from 'child_process';
+import { execFile, exec } from 'child_process';
 import { mapState, mapGetters } from 'vuex';
 import path from 'path';
 import Numbers from './Statistics/Numbers';
@@ -42,6 +42,7 @@ export default {
   data() {
     return {
       platform: require('os').platform(),
+      gpu: 'amd',
     };
   },
   components: {
@@ -90,6 +91,15 @@ export default {
       this.$store.commit('RESET_MINER_STATUS');
       this.$store.commit('TOGGLE_MINING');
     },
+    getGpu() {
+      exec('wmic path win32_VideoController get name', (error, stdout, stderr) => {
+        if (stdout.indexOf('NVIDIA') > -1 || stderr.indexOf('NVIDIA') > -1) {
+          this.gpu = 'nvidia';
+        } else {
+          this.gpu = 'amd';
+        }
+      });
+    },
     mineWithCpu() {
       let minerPath = `miners/${this.platform}/minerd`;
       if (this.platform === 'win32' || this.platform === 'win') {
@@ -111,12 +121,12 @@ export default {
           log: data,
         });
 
-        if (data.split(' ')[2] === 'thread') {
+        if (typeof data === 'string' && data.split(' ')[2] === 'thread') {
           this.$store.commit('UPDATE_CPU_SPEED', {
             isShare: false,
             speed: data.replace(/.*thread \d+: \d+ hashes, (\d+(\.\d+)?) KH\/s/, '$1'),
           });
-        } else if (data.split(' ')[2] === 'accepted:') {
+        } else if (typeof data === 'string' && data.split(' ')[2] === 'accepted:') {
           this.$store.commit('UPDATE_CPU_SPEED', {
             isShare: true,
             speed: data.replace(/.*accepted: \d+\/\d+ \(.+\), (\d+(\.\d+)?) .*/, '$1'),
@@ -129,12 +139,12 @@ export default {
           log: data,
         });
 
-        if (data.split(' ')[2] === 'thread') {
+        if (typeof data === 'string' && data.split(' ')[2] === 'thread') {
           this.$store.commit('UPDATE_CPU_SPEED', {
             isShare: false,
             speed: data.replace(/.*thread \d+: \d+ hashes, (\d+(\.\d+)?) KH\/s/, '$1'),
           });
-        } else if (data.split(' ')[2] === 'accepted:') {
+        } else if (typeof data === 'string' && data.split(' ')[2] === 'accepted:') {
           this.$store.commit('UPDATE_CPU_SPEED', {
             isShare: true,
             speed: data.replace(/.*accepted: \d+\/\d+ \(.+\), (\d+(\.\d+)?) .*/, '$1'),
@@ -155,15 +165,27 @@ export default {
       });
     },
     mineWithGpu() {
-      let minerPath = `miners/${this.platform}/ccminer`;
-      if (this.platform === 'win32' || this.platform === 'win') {
-        minerPath = `${minerPath}.exe`;
+      const minerPath = `miners/${this.platform}/${this.gpu}`;
+      let miner;
+      // if (this.platform === 'win32' || this.platform === 'win') {
+      //   minerPath = `${minerPath}.exe`;
+      // }
+      if (this.gpu === 'nvidia') {
+        miner = execFile(`${path.join(__static, minerPath)}/miner`,
+          ['--algo=neoscrypt',
+            `--url=${this.currentPool}`,
+            `--user=${this.settings.wallet}`,
+            '-p c=DSR']);
+      } else {
+        miner = exec(`set GPU_MAX_ALLOC_PERCENT=100 && \
+          set GPU_USE_SYNC_OBJECTS=1 && \
+          set GPU_FORCE_64BIT_PTR=1 && \
+          set GPU_MAX_HEAP_SIZE=100 && \
+          set GPU_SINGLE_ALLOC_PERCENT=100 && \
+          start cmd.exe /K ${path.join(__static, minerPath)}/miner \
+          --default-config="${path.join(__static, minerPath)}/miner-config.conf" \
+          --kernel-path=""${path.join(__static, minerPath)}/kernel"`);
       }
-      const miner = execFile(path.join(__static, minerPath),
-        ['--algo=neoscrypt',
-          `--url=${this.currentPool}`,
-          `--user=${this.settings.wallet}`,
-          '-p c=DSR']);
 
       this.$store.commit('ADD_PID', {
         pid: miner.pid,
@@ -174,7 +196,7 @@ export default {
           log: data,
         });
 
-        if (data.split(' ')[2] === 'accepted:') {
+        if (typeof data === 'string' && data.split(' ')[2] === 'accepted:') {
           const speed = data.split(' ')[data.split(' ').length - 3];
           this.$store.commit('UPDATE_GPU_SPEED', {
             speed,
@@ -216,6 +238,9 @@ export default {
       this.$store.commit('RESET_MINER_STATUS');
       this.$store.commit('TOGGLE_MINING');
     },
+  },
+  created() {
+    this.getGpu();
   },
 };
 </script>
