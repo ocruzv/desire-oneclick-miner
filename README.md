@@ -1,14 +1,17 @@
 # desire-oneclick-miner
 
-> Desire miner with just one click
+> Desire miner with just one click - Nvidia & Windows Only.
 
 #### Known bugs
 
-- Stop miner doesn't really stop the miner. If you are sure to stop, please close the window.
+- Currently only works with CUDA 9.1 drivers. In future releases will support CUDA 8 too.
 
 #### To do
 
-- Custom pools
+- [X] Custom pools
+- [ ] CUDA 8 support
+- [ ] AMD Graphics support
+- [ ] Linux release
 
 #### Development
 

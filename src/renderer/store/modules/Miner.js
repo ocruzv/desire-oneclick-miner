@@ -20,7 +20,7 @@ const mutations = {
     }
     if (!state.isShare && !payload.isShare) {
       state.cpuSpeed.speed = payload.speed;
-    } else if (state.isShare && payload.isShare) {
+    } else if (state.cpuSpeed.isShare && payload.isShare) {
       state.cpuSpeed.speed = payload.speed;
       state.shares += 1;
     }
