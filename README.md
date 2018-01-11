@@ -1,17 +1,21 @@
 # desire-oneclick-miner
 
-> Desire miner with just one click - Nvidia & Windows Only.
+> Desire miner with just one click - nVidia or AMD Graphics & Windows Only.
 
 #### Known bugs
 
-- Currently only works with CUDA 9.1 drivers. In future releases will support CUDA 8 too.
+- Currently only works with CUDA 9.1 drivers (nVidia). In future releases will support CUDA 8 too. Please update your drivers!
 
 #### To do
 
 - [X] Custom pools
+- [X] AMD Graphics support
 - [ ] CUDA 8 support
-- [ ] AMD Graphics support
 - [ ] Linux release
+
+For a full to-do list please follow:
+
+https://trello.com/b/a790Vmov
 
 #### Development
 
