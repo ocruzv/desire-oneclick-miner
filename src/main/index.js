@@ -14,6 +14,7 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`;
 
 function createWindow() {
+  app.commandLine.appendSwitch('disable-web-security');
   /**
    * Initial window options
    */
@@ -21,6 +22,9 @@ function createWindow() {
     height: 650,
     useContentSize: true,
     width: 600,
+    'web-preferences': {
+      'web-security': false,
+    },
   });
 
   mainWindow.loadURL(winURL);
